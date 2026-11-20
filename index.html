@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="An interactive D3 explorable explanation about how 64 pixel intensities encode handwritten digits." />
+  <title>64 Pixels, Ten Identities — Prototype</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="style.css" />
+  <script type="module" src="main.js"></script>
+</head>
+
+<body>
+  <header class="hero">
+    <nav class="topbar" aria-label="Project navigation">
+      <a class="brand" href="#top">64 Pixels</a>
+      <div class="navlinks">
+        <a href="#pixel-explorer">Pixels</a>
+        <a href="#galaxy">Galaxy</a>
+        <a href="#compare">Compare</a>
+        <a href="#prototype-writeup">Prototype writeup</a>
+      </div>
+    </nav>
+
+    <div class="hero-copy" id="top">
+      <p class="eyebrow">DSC 209R · Final Project Prototype</p>
+      <h1>64 Pixels, Ten Identities</h1>
+      <p class="dek">The hidden geometry of handwriting.</p>
+      <p class="hook">Can 64 numbers remember what a handwritten digit looks like?</p>
+      <p class="intro">
+        Every image in this dataset is only an 8×8 grid of pixel intensities.
+        This prototype lets you move between the image, its 64-number representation,
+        and the larger visual landscape formed by 1,797 handwritten examples.
+      </p>
+      <a class="cta" href="#pixel-explorer">Start with one digit ↓</a>
+    </div>
+
+    <div class="hero-glyph" aria-hidden="true">
+      <div id="hero-mini-grid" class="mini-grid hero-grid"></div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section" id="pixel-explorer">
+      <div class="section-heading">
+        <p class="eyebrow">01 · From ink to numbers</p>
+        <h2>A digit becomes 64 measurements.</h2>
+        <p>
+          Pick a digit, then cycle through real handwritten examples. Hover any cell
+          to see the exact pixel intensity that helps define the shape.
+        </p>
+      </div>
+
+      <div class="explorer-layout">
+        <div class="panel controls-panel">
+          <label for="digit-select">Digit</label>
+          <select id="digit-select" aria-label="Choose a digit"></select>
+
+          <div class="button-row">
+            <button id="previous-sample" type="button">← Previous</button>
+            <button id="next-sample" type="button">Next →</button>
+          </div>
+
+          <div class="sample-meta">
+            <span>Sample</span>
+            <strong id="sample-id">—</strong>
+          </div>
+
+          <p class="microcopy">
+            Intensity runs from <strong>0</strong> (background) to
+            <strong>16</strong> (bright stroke).
+          </p>
+        </div>
+
+        <div class="panel pixel-panel">
+          <div id="pixel-grid" class="pixel-grid" aria-label="8 by 8 pixel intensity grid"></div>
+        </div>
+
+        <div class="panel vector-panel">
+          <div class="panel-label">The same image as a 64-value vector</div>
+          <div id="pixel-vector" class="pixel-vector"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section dark-section" id="galaxy">
+      <div class="section-heading">
+        <p class="eyebrow">02 · The digit galaxy</p>
+        <h2>1,797 handwritten digits. One visual landscape.</h2>
+        <p>
+          PCA compresses each 64-dimensional image into two coordinates. Position is
+          only a projection, but it reveals where digit identities form neighborhoods
+          and where those neighborhoods begin to overlap.
+        </p>
+      </div>
+
+      <div class="galaxy-toolbar">
+        <div>
+          <span class="toolbar-label">Filter by digit</span>
+          <div id="digit-legend" class="digit-legend" role="group" aria-label="Digit filter"></div>
+        </div>
+        <div class="galaxy-actions">
+          <button id="brush-toggle" type="button" class="secondary-button">Select region</button>
+          <button id="clear-brush" type="button" class="secondary-button">Clear selection</button>
+        </div>
+      </div>
+
+      <div class="galaxy-layout">
+        <div class="galaxy-chart-wrap panel">
+          <svg id="galaxy-chart" role="img" aria-label="PCA scatterplot of handwritten digits"></svg>
+          <div id="galaxy-tooltip" class="tooltip" hidden></div>
+        </div>
+
+        <aside class="galaxy-sidebar">
+          <div class="panel selection-panel">
+            <p class="panel-label">Brushed region</p>
+            <div class="big-number" id="selection-count">0</div>
+            <p id="selection-copy">Drag across the galaxy to select a neighborhood.</p>
+            <div id="selection-bars" class="selection-bars"></div>
+          </div>
+
+          <div class="panel average-panel">
+            <p class="panel-label">Average shape in selection</p>
+            <div id="selection-average" class="mini-grid average-grid"></div>
+            <p class="microcopy">The average updates whenever you brush a new region.</p>
+          </div>
+        </aside>
+      </div>
+
+      <div class="annotation-card">
+        <span class="annotation-mark">↗</span>
+        <div>
+          <strong>What to look for</strong>
+          <p>
+            Dense islands suggest consistent handwriting structure. Mixed-color
+            borders are more interesting: they show places where different labels
+            occupy similar regions of the 64-pixel space.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="compare">
+      <div class="section-heading">
+        <p class="eyebrow">03 · Where identities collide</p>
+        <h2>Compare two digit identities pixel by pixel.</h2>
+        <p>
+          Average images make the shared structure visible. The difference map
+          highlights the pixels that most strongly separate the two selected digits.
+        </p>
+      </div>
+
+      <div class="compare-controls panel">
+        <label>
+          First digit
+          <select id="compare-a"></select>
+        </label>
+        <span class="versus">vs.</span>
+        <label>
+          Second digit
+          <select id="compare-b"></select>
+        </label>
+      </div>
+
+      <div class="compare-grid">
+        <figure class="panel compare-card">
+          <figcaption id="compare-a-title">Average digit</figcaption>
+          <div id="average-a" class="mini-grid compare-image"></div>
+        </figure>
+
+        <figure class="panel compare-card">
+          <figcaption id="compare-b-title">Average digit</figcaption>
+          <div id="average-b" class="mini-grid compare-image"></div>
+        </figure>
+
+        <figure class="panel compare-card difference-card">
+          <figcaption>Absolute pixel difference</figcaption>
+          <div id="difference-grid" class="mini-grid compare-image"></div>
+          <p id="difference-copy" class="microcopy"></p>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section narrative-section">
+      <div class="story-grid">
+        <article>
+          <p class="story-word">AND</p>
+          <h3>Digits feel like obvious categories.</h3>
+          <p>
+            People recognize a “3” or an “8” almost instantly, and each image can be
+            encoded using only 64 pixel intensities.
+          </p>
+        </article>
+        <article>
+          <p class="story-word">BUT</p>
+          <h3>Real handwriting does not stay inside clean boxes.</h3>
+          <p>
+            Writers bend, stretch, close, and open strokes differently, so visually
+            similar samples can occupy overlapping neighborhoods.
+          </p>
+        </article>
+        <article>
+          <p class="story-word">THEREFORE</p>
+          <h3>Identity behaves more like a landscape than ten islands.</h3>
+          <p>
+            The interesting story is not only where digits separate, but where their
+            visual structures begin to resemble one another.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section writeup-section" id="prototype-writeup">
+      <div class="section-heading">
+        <p class="eyebrow">Prototype writeup</p>
+        <h2>What is built now, and what remains difficult?</h2>
+      </div>
+
+      <div class="writeup-grid">
+        <article class="panel writeup-card">
+          <h3>What have you done so far?</h3>
+          <p>
+            I established the full page structure for the explorable explanation and connected it to the public handwritten-digits dataset with 1,797 real samples.
+            I implemented an interactive 8×8 pixel explorer so a reader can connect a familiar handwritten symbol to the 64 numerical values that encode it.
+            I also built the main D3 “Digit Galaxy,” including digit filtering, hover details, and brush selection that recomputes the selected digit composition and average handwriting shape.
+            Finally, I added a two-digit comparison view that computes average glyphs and a pixel-level difference map, giving the prototype multiple linked ways to explore variation and overlap.
+          </p>
+        </article>
+
+        <article class="panel writeup-card">
+          <h3>What will be the most challenging part to design, and why?</h3>
+          <p>
+            The most challenging part will be turning the two-dimensional projection into a clear story without implying that PCA perfectly represents all 64-dimensional relationships.
+            I need to design annotations and guided transitions that help readers notice meaningful overlap while still understanding that proximity in the galaxy is an approximation.
+            Another challenge will be balancing open-ended exploration with enough narrative direction so the page feels like an explorable explanation rather than a dashboard.
+            The final version will therefore need careful testing of the annotations, interaction sequence, and planned “Guess the Digit” moment so curiosity supports the main takeaway instead of distracting from it.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section next-section">
+      <div class="section-heading">
+        <p class="eyebrow">Next iteration</p>
+        <h2>What I plan to add after prototype feedback.</h2>
+      </div>
+      <div class="next-grid">
+        <div class="panel"><strong>Guided annotations</strong><span>Call out notable overlaps and unusual handwriting examples.</span></div>
+        <div class="panel"><strong>Guess the Digit</strong><span>Hide an ambiguous label, ask the reader to guess, then reveal its neighborhood.</span></div>
+        <div class="panel"><strong>Scroll transitions</strong><span>Connect the single-image view to the full galaxy with a clearer visual narrative.</span></div>
+        <div class="panel"><strong>Final takeaways</strong><span>End with one memorable statement about identity, variation, and representation.</span></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div>
+      <strong>64 Pixels, Ten Identities</strong>
+      <span>Krishna Kanth Kodanganti · DSC 209R</span>
+    </div>
+    <div class="footer-links">
+      <a href="https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_digits.html" target="_blank" rel="noopener noreferrer">Dataset documentation</a>
+      <a href="https://archive.ics.uci.edu/dataset/80/optical+recognition+of+handwritten+digits" target="_blank" rel="noopener noreferrer">UCI source</a>
+    </div>
+  </footer>
+</body>
+</html>

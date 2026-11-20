@@ -1,0 +1,16 @@
+FINAL PROJECT: INITIAL PROTOTYPE
+
+Project Title:
+64 Pixels, Ten Identities: The Hidden Geometry of Handwriting
+
+Prototype URL:
+https://krishnakanth172.github.io/handwriting-geometry/
+
+Public GitHub Repository:
+https://github.com/Krishnakanth172/handwriting-geometry
+
+What have you done so far?
+I established the full page structure for the explorable explanation and connected it to the public handwritten-digits dataset with 1,797 real samples. I implemented an interactive 8×8 pixel explorer so a reader can connect a familiar handwritten symbol to the 64 numerical values that encode it. I also built the main D3 “Digit Galaxy,” including digit filtering, hover details, and brush selection that recomputes the selected digit composition and average handwriting shape. Finally, I added a two-digit comparison view that computes average glyphs and a pixel-level difference map, giving the prototype multiple linked ways to explore variation and overlap.
+
+What will be the most challenging part to design, and why?
+The most challenging part will be turning the two-dimensional projection into a clear story without implying that PCA perfectly represents all 64-dimensional relationships. I need to design annotations and guided transitions that help readers notice meaningful overlap while still understanding that proximity in the galaxy is an approximation. Another challenge will be balancing open-ended exploration with enough narrative direction so the page feels like an explorable explanation rather than a dashboard. The final version will therefore need careful testing of the annotations, interaction sequence, and planned “Guess the Digit” moment so curiosity supports the main takeaway instead of distracting from it.
